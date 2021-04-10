@@ -1,1 +1,1 @@
-"# Minecraft vanilla skybox" 
+# Minecraft vanilla skybox
