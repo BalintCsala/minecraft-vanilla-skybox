@@ -16,8 +16,15 @@
 			"outtarget": "sky",
 			"auxtargets": [
 				{
-					"name": "SkyBoxSampler",
-                    "id": "skybox",
+					"name": "SkyBoxDaySampler",
+                    "id": "skybox-day",
+                    "width": 1,
+                    "height": 1,
+                    "bilinear": false
+				},
+				{
+					"name": "SkyBoxNightSampler",
+                    "id": "skybox-night",
                     "width": 1,
                     "height": 1,
                     "bilinear": false

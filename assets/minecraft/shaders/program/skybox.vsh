@@ -11,6 +11,7 @@ uniform sampler2D DiffuseSampler;
 out vec2 texCoord;
 out vec2 oneTexel;
 out vec3 direction;
+out float timeOfDay;
 
 #define FPRECISION 4000000.0
 #define PROJNEAR 0.05
@@ -64,7 +65,25 @@ void main(){
                             decodeFloat(texture(DiffuseSampler, start + 22.0 * inc).xyz), decodeFloat(texture(DiffuseSampler, start + 23.0 * inc).xyz), decodeFloat(texture(DiffuseSampler, start + 24.0 * inc).xyz), 0.0,
                             0.0, 0.0, 0.0, 1.0);
     
+    mat4 ProjMat = mat4(tan(decodeFloat(texture(DiffuseSampler, start + 3.0 * inc).xyz)), decodeFloat(texture(DiffuseSampler, start + 6.0 * inc).xyz), 0.0, 0.0,
+            decodeFloat(texture(DiffuseSampler, start + 5.0 * inc).xyz), tan(decodeFloat(texture(DiffuseSampler, start + 4.0 * inc).xyz)), decodeFloat(texture(DiffuseSampler, start + 7.0 * inc).xyz), decodeFloat(texture(DiffuseSampler, start + 8.0 * inc).xyz),
+            decodeFloat(texture(DiffuseSampler, start + 9.0 * inc).xyz), decodeFloat(texture(DiffuseSampler, start + 10.0 * inc).xyz), decodeFloat(texture(DiffuseSampler, start + 11.0 * inc).xyz),  decodeFloat(texture(DiffuseSampler, start + 12.0 * inc).xyz),
+            decodeFloat(texture(DiffuseSampler, start + 13.0 * inc).xyz), decodeFloat(texture(DiffuseSampler, start + 14.0 * inc).xyz), decodeFloat(texture(DiffuseSampler, start + 15.0 * inc).xyz), 0.0);
+
+    vec3 sunDir = normalize((inverse(ModelViewMat) * vec4(decodeFloat(texture(DiffuseSampler, start).xyz), 
+                                                    decodeFloat(texture(DiffuseSampler, start + inc).xyz), 
+                                                    decodeFloat(texture(DiffuseSampler, start + 2.0 * inc).xyz),
+                                                    1.0)).xyz);
+
+    timeOfDay = dot(sunDir, vec3(0, 1, 0));
+
+    float near = PROJNEAR;
+    float far = ProjMat[3][2] * near / (ProjMat[3][2] + 2.0 * near);
+    float fov = atan(1 / ProjMat[1][1]);
+
+    mat4 projInv = inverse(ProjMat * ModelViewMat);
+
 	vec2 squareUV = (texCoord - 0.5) / (OutSize.yy / OutSize.xy);
 	
-	direction = (inverse(ModelViewMat) * vec4(normalize(vec3(squareUV.x, squareUV.y, -0.6366)), 0)).xyz;
+	direction = (projInv * vec4(outPos.xy * (far - near), far + near, far - near)).xyz;
 }

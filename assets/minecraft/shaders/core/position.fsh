@@ -51,10 +51,7 @@ void main() {
         } else {
             discard;
         }
-    }
-
-    // not a control pixel, draw sky like normal
-    else {
+    } else {
 		fragColor = vec4(0);
 	}
 

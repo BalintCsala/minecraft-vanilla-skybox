@@ -12,7 +12,7 @@ out vec4 fragColor;
 
 void main() {
     if (isHorizon > 0.5) {
-        discardControl(gl_FragCoord.xy, ScreenSize.x);
+        discard;
     }
     
     vec4 color = vertexColor;
