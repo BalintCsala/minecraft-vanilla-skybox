@@ -28,7 +28,14 @@
                     "width": 1,
                     "height": 1,
                     "bilinear": false
-				}
+				},
+                {
+                    "name": "SkyBoxEndSampler",
+                    "id": "skybox-end",
+                    "width": 1,
+                    "height": 1,
+                    "bilinear": false
+                }
 			]
 		},
         {

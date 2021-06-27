@@ -12,7 +12,8 @@ out vec4 fragColor;
 
 void main() {
     if (isHorizon > 0.5) {
-        discard;
+        fragColor = vec4(1, 0, 0, 0);
+        return;
     }
     
     vec4 color = vertexColor;
