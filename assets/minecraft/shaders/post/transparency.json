@@ -15,6 +15,10 @@
 			"intarget": "minecraft:main",
 			"outtarget": "sky",
 			"auxtargets": [
+                {
+                    "name": "DepthSampler",
+                    "id": "minecraft:main:depth"
+                },
 				{
 					"name": "SkyBoxDaySampler",
                     "id": "skybox-day",
@@ -28,14 +32,7 @@
                     "width": 1,
                     "height": 1,
                     "bilinear": false
-				},
-                {
-                    "name": "SkyBoxEndSampler",
-                    "id": "skybox-end",
-                    "width": 1,
-                    "height": 1,
-                    "bilinear": false
-                }
+				}
 			]
 		},
         {

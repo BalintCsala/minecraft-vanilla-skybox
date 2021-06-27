@@ -12,6 +12,12 @@ out vec2 texCoord;
 out vec2 oneTexel;
 out vec3 direction;
 out float timeOfDay;
+out float near;
+out float far;
+out mat4 projInv;
+out vec4 fogColor;
+out vec3 up;
+out vec3 sunDir;
 
 #define FPRECISION 4000000.0
 #define PROJNEAR 0.05
@@ -70,18 +76,22 @@ void main(){
             decodeFloat(texture(DiffuseSampler, start + 9.0 * inc).xyz), decodeFloat(texture(DiffuseSampler, start + 10.0 * inc).xyz), decodeFloat(texture(DiffuseSampler, start + 11.0 * inc).xyz),  decodeFloat(texture(DiffuseSampler, start + 12.0 * inc).xyz),
             decodeFloat(texture(DiffuseSampler, start + 13.0 * inc).xyz), decodeFloat(texture(DiffuseSampler, start + 14.0 * inc).xyz), decodeFloat(texture(DiffuseSampler, start + 15.0 * inc).xyz), 0.0);
 
-    vec3 sunDir = normalize((inverse(ModelViewMat) * vec4(decodeFloat(texture(DiffuseSampler, start).xyz), 
+    sunDir = normalize((inverse(ModelViewMat) * vec4(decodeFloat(texture(DiffuseSampler, start).xyz), 
                                                     decodeFloat(texture(DiffuseSampler, start + inc).xyz), 
                                                     decodeFloat(texture(DiffuseSampler, start + 2.0 * inc).xyz),
                                                     1.0)).xyz);
 
+    up = vec3(0, 1, 0); 
+
+    fogColor = texture(DiffuseSampler, start + inc * 25);
+
     timeOfDay = dot(sunDir, vec3(0, 1, 0));
 
-    float near = PROJNEAR;
-    float far = ProjMat[3][2] * near / (ProjMat[3][2] + 2.0 * near);
+    near = PROJNEAR;
+    far = ProjMat[3][2] * near / (ProjMat[3][2] + 2.0 * near);
     float fov = atan(1 / ProjMat[1][1]);
 
-    mat4 projInv = inverse(ProjMat * ModelViewMat);
+    projInv = inverse(ProjMat * ModelViewMat);
 
 	vec2 squareUV = (texCoord - 0.5) / (OutSize.yy / OutSize.xy);
 	
