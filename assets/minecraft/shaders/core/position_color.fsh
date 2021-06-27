@@ -14,7 +14,7 @@ void main() {
     if (isHorizon > 0.5) {
         gl_FragDepth = 0.5;
         int index = inControl(gl_FragCoord.xy, ScreenSize.x);
-        if (index == 25) {
+        if (index == 26) {
             fragColor = vertexColor * ColorModulator;
             return;
         } else if (index != -1) {

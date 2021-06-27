@@ -1,6 +1,6 @@
 #version 150
 
-#define NUMCONTROLS 26
+#define NUMCONTROLS 30
 #define THRESH 0.5
 #define FPRECISION 4000000.0
 #define PROJNEAR 0.05

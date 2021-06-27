@@ -83,7 +83,9 @@ void main(){
 
     up = vec3(0, 1, 0); 
 
-    fogColor = texture(DiffuseSampler, start + inc * 25);
+    vec4 dawnColor = texture(DiffuseSampler, start + inc * 26);
+
+    fogColor = mix(texture(DiffuseSampler, start + inc * 25), dawnColor, dawnColor.a);
 
     timeOfDay = dot(sunDir, vec3(0, 1, 0));
 

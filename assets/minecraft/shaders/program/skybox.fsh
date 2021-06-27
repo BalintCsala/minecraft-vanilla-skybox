@@ -19,7 +19,7 @@ in vec3 sunDir;
 
 out vec4 fragColor;
 
-const float FUDGE = 0.1;
+const float FUDGE = 0.01;
 
 float linearizeDepth(float depth) {
     return (2.0 * near * far) / (far + near - depth * (far - near));    
@@ -68,9 +68,9 @@ void main() {
     fragColor = texture(DiffuseSampler, texCoord);
 
 	vec3 temp = fragColor.rgb - vec3(0.157, 0.024, 0.024);
-	bool isNether = dot(temp, temp) < FUDGE || dot(fragColor.rgb, fragColor.rgb) < FUDGE;
+	bool isNether = dot(temp, temp) < FUDGE;
 
-	if (!isNether && realDepth > far / 2 - 5) {
+	if (far > 50 && realDepth > far / 2 - 5) {
 		
 		vec3 daySkybox = sampleSkybox(SkyBoxDaySampler, direction);
 		vec3 nightSkybox = sampleSkybox(SkyBoxNightSampler, direction);
@@ -85,8 +85,8 @@ void main() {
         vec3 view = normalize((projInv * screenPos).xyz);
         float ndusq = clamp(dot(view, vec3(0.0, 1.0, 0.0)), 0.0, 1.0);
         ndusq = ndusq * ndusq;
-		
-		vec4 finalColor = linear_fog(vec4(skyColor, 1), pow(1.0 - ndusq, 8.0), 0.0, 1.0, fogColor);
+
+		vec4 finalColor = linear_fog(vec4(skyColor, 1), pow(1.0 - ndusq, 8.0), 0.0, 1.0, fogColor / fogColor.a);
 		
 		fragColor = vec4(mix(
 			finalColor.rgb,

@@ -36,6 +36,8 @@ void main() {
                 fragColor = vec4(encodeFloat(atan(ProjMat[index - 3][index - 3])), 1.0);
             } else if (index == 25) {
                 fragColor = FogColor;
+            } else if (index == 26) {
+                fragColor = vec4(0);
             } else {
                 fragColor = vec4(0.0, 0.0, 0.0, 1.0);
             }
