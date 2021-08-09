@@ -56,7 +56,7 @@ void main() {
         fragColor.a = 0;
     }
     else {
-        fragColor = linear_fog(ColorModulator, vertexDistance, FogStart, FogEnd, FogColor);
+        fragColor = vec4(0);
     }
 
 }
