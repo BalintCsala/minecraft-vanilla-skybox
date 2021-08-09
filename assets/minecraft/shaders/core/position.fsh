@@ -56,7 +56,7 @@ void main() {
         fragColor.a = 0;
     }
     else {
-        fragColor = vec4(0);
+		discard;
     }
 
 }
