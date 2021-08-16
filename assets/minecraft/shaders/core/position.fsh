@@ -20,8 +20,10 @@ out vec4 fragColor;
 // at this point, the entire sky is drawable: isSky for sky, stars and void plane for everything else.
 // similar logic can be added in vsh to separate void plane from stars.
 void main() {
+	gl_FragDepth = gl_FragCoord.z;
     int index = inControl(gl_FragCoord.xy, ScreenSize.x);
     if (index != -1) {
+		gl_FragDepth = 1.0;
         if (isSky > 0.5) {
             if (index >= 5 && index <= 15) {
                 int c = (index - 5) / 4;
