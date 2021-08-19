@@ -58,7 +58,9 @@ void main() {
         fragColor.a = 0;
     }
     else {
-		discard;
-    }
+		if (vertexDistance < 800)
+			discard;
+		fragColor = ColorModulator;//linear_fog(ColorModulator, vertexDistance, FogStart, FogEnd, FogColor);
+	}
 
 }
