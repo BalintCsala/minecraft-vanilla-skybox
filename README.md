@@ -14,3 +14,5 @@ Implements custom skyboxes into vanilla Minecraft
 ## Credit
 
 Largely built upon sun-position from https://github.com/bradleyq/shader-toolkit
+
+Please credit when used.
