@@ -34,9 +34,9 @@ vec2 convertToCubemapUV(vec3 direction) {
 		}
 	} else if (absDir.y >= absDir.z) {
 		if (dir.y > 0) {
-			return vec2(1.0 / 3, 0) + (dir.xz * vec2(-1, 1) + 1) / 2 / vec2(3, 2);
+			return vec2(1.0 / 3, 0) + (dir.xz * vec2(1, -1) + 1) / 2 / vec2(3, 2);
 		} else {
-			return vec2(0, 0) + (-dir.xz + 1) / 2 / vec2(3, 2);
+			return vec2(0, 0) + (-dir.xz * vec2(-1, -1) + 1) / 2 / vec2(3, 2);
 		}
 	} else {
 		if (dir.z < 0) {
