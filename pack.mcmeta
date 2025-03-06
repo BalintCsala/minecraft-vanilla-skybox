@@ -1,6 +1,6 @@
 {
-   "pack": {
-      "pack_format": 8,
-      "description": "Vanilla skybox"
-   }
+  "pack": {
+    "pack_format": 54,
+    "description": "Minecraft vanilla skybox template"
+  }
 }
