@@ -50,7 +50,7 @@ void main() {
             vertex3 = vec4(Position, 1.0);
             break;
         case 3:
-            gl_Position = vec4(10.0, 10.0, 0.0, 1.0);
+            gl_Position = vec4(10.0, -2.0, 0.0, 1.0);
             break;
     }
 }

@@ -10,7 +10,7 @@ out vec4 vertexColor;
 
 void main() {
     vec4 viewPos = ModelViewMat * vec4(Position, 1.0);
-    if (viewPos.z > -118.0) {
+    if (viewPos.z > -138.0) {
         gl_Position = vec4(-1.0);
         return;
     }

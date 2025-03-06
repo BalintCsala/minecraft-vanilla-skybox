@@ -36,6 +36,7 @@ Order the skyboxes such that the start times are in increasing order. `sun.png` 
 ## Other customizations
 
 - The shader removes fog by default, because it might clash with the skybox. To revert this, delete `assets/minecraft/shaders/include/fog.glsl`.
+- The shader removes the horizon of the game (only appears at sunset and gives the lower edge of the sky an orangeish hue). If you want to revert this, delete `assets/minecraft/shaders/core/position_color.vsh` and the same but with `.fsh`
 
 ## Limitations
 

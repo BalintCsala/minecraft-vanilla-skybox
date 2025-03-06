@@ -27,10 +27,10 @@ vec2 convertToCubemapUV(vec3 direction) {
 	vec2 skyboxUV;
 	vec4 backgroundColor;
 	if (absDir.x >= absDir.y && absDir.x > absDir.z) {
-		if (dir.x > 0) {
-			return vec2(0, 0.5) + (dir.zy * vec2(1, -1) + 1) / 2 / vec2(3, 2);
+		if (dir.x < 0) {
+			return vec2(0, 0.5) + (dir.zy * vec2(-1, -1) + 1) / 2 / vec2(3, 2);
 		} else {
-			return vec2(2.0 / 3, 0.5) + (-dir.zy + 1) / 2 / vec2(3, 2);
+			return vec2(2.0 / 3, 0.5) + (-dir.zy * vec2(-1, 1) + 1) / 2 / vec2(3, 2);
 		}
 	} else if (absDir.y >= absDir.z) {
 		if (dir.y > 0) {
@@ -39,22 +39,26 @@ vec2 convertToCubemapUV(vec3 direction) {
 			return vec2(0, 0) + (-dir.xz + 1) / 2 / vec2(3, 2);
 		}
 	} else {
-		if (dir.z > 0) {
-			return vec2(1.0 / 3, 0.5) + (-dir.xy + 1) / 2 / vec2(3, 2);
+		if (dir.z < 0) {
+			return vec2(1.0 / 3, 0.5) + (-dir.xy * vec2(-1, 1) + 1) / 2 / vec2(3, 2);
 		} else {
-			return vec2(2.0 / 3, 0) + (dir.xy * vec2(1, -1) + 1) / 2 / vec2(3, 2);
+			return vec2(2.0 / 3, 0) + (dir.xy * vec2(-1, -1) + 1) / 2 / vec2(3, 2);
 		}
 	}
 }
 
 void main() {
-    vec4 color = texture(Sampler0, texCoord0) * vertexColor;
-    if (color.a == 0.0) {
-        discard;
-    }
-    fragColor = color * ColorModulator;
     if (isSun < 0.5) {
+        vec4 color = texture(Sampler0, texCoord0) * vertexColor;
+        if (color.a == 0.0) {
+            discard;
+        }
+        fragColor = color * ColorModulator;
         return;
+    }
+    
+    if (gl_PrimitiveID >= 1) {
+        discard;
     }
 
     vec3 pos1 = vertex1.xyz / vertex1.w;
@@ -73,7 +77,7 @@ void main() {
     vec3 viewPos = temp.xyz / temp.w;
     vec3 playerPos = viewPos * mat3(ModelViewMat);
     vec3 rayDir = normalize(playerPos);
-    
+
     // Figure out which cubemaps to use
     float currentTime = 1.0 - fract(atan(center.x, center.y) / PI * 0.5 + 0.5);
     ivec2 texSize = textureSize(Sampler0, 0);
