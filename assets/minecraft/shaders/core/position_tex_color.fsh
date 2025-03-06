@@ -48,12 +48,12 @@ vec2 convertToCubemapUV(vec3 direction) {
 }
 
 void main() {
-    vec4 color = texture(Sampler0, texCoord0) * vertexColor;
-    if (color.a == 0.0) {
-        discard;
-    }
-    fragColor = color * ColorModulator;
     if (isSun < 0.5) {
+		vec4 color = texture(Sampler0, texCoord0) * vertexColor;
+		if (color.a == 0.0) {
+			discard;
+		}
+		fragColor = color * ColorModulator;
         return;
     }
 
