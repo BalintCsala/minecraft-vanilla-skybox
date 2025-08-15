@@ -31,12 +31,29 @@ Order the skyboxes such that the start times are in increasing order. `sun.png` 
 - Put the original sun texture in the top left corner, modified to have an alpha value of 17 everywhere.
 - Right below the sun is the list of skyboxes in chronological order.
 - Before every skybox, place a gap that's 1 pixel tall. The first pixel on the left inside this gap should contain the starting interpolation time of the skybox in the red channel and similarly the second pixel should contain the ending interpolation time.
-- Place the skybox after the gap
+- Place the skybox after the gap.
 
 ## Other customizations
 
-- The shader removes fog by default, because it might clash with the skybox. To revert this, delete `assets/minecraft/shaders/include/fog.glsl`.
-- The shader removes the horizon of the game (only appears at sunset and gives the lower edge of the sky an orangeish hue). If you want to revert this, delete `assets/minecraft/shaders/core/position_color.vsh` and the same but with `.fsh`
+### Solid moon
+
+Some packs require the moon to be solid instead of behaving additively. For this you'll have to provide an alpha mask for the moon:
+
+1. Take one sprite/frame from your moon_phases texture (`assets/minecraft/textures/environment/moon_phases.png`) and scale it up or down to the height of your original `sun.png` texture (before you added the skyboxes).
+2. If the background of the texture isn't transparent, remove it from the image (with Photoshop or Gimp). Make sure only the solid parts are kept, stuff like the glow from the moon shouldn't be.
+3. Place the edited image right next to the original sun texture in the edited `sun.png`.
+
+The example `sun.png` texture includes this feature if you need some reference.
+
+The solution doesn't support changing moon shapes and might be at a lower resolution, than the original texture (though you can counteract this by making the sun texture larger).
+
+### Return fog
+
+The shader removes fog by default, because it might clash with the skybox. To revert this, delete `assets/minecraft/shaders/include/fog.glsl`.
+
+### Return the horizon
+
+The shader removes the horizon of the game (only appears at sunset and gives the lower edge of the sky an orangeish hue). If you want to revert this, delete `assets/minecraft/shaders/core/position_color.vsh` and the same but with `.fsh`.
 
 ## Limitations
 

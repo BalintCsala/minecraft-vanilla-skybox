@@ -1,14 +1,12 @@
 #version 150
 
+#moj_import <minecraft:dynamictransforms.glsl>
+#moj_import <minecraft:projection.glsl>
+#moj_import <minecraft:globals.glsl>
+
 const float PI = 3.141592654;
 
 uniform sampler2D Sampler0;
-
-uniform vec4 ColorModulator;
-
-uniform mat4 ModelViewMat;
-uniform mat4 ProjMat;
-uniform vec2 ScreenSize;
 
 in vec2 texCoord0;
 in vec4 vertexColor;
@@ -45,6 +43,10 @@ vec2 convertToCubemapUV(vec3 direction) {
 			return vec2(2.0 / 3, 0) + (dir.xy * vec2(-1, -1) + 1) / 2 / vec2(3, 2);
 		}
 	}
+}
+
+float rayPlane(vec3 rayOrigin, vec3 rayDir, vec3 point, vec3 normal) {
+    return dot(point - rayOrigin, normal) / dot(rayDir, normal);
 }
 
 void main() {
@@ -118,8 +120,7 @@ void main() {
 
     // Raytrace the original sun
     vec3 normal = normalize(cross(pos1 - pos2, pos3 - pos2));
-    // Ray-Plane intersection
-    float t = dot(center, normal) / dot(rayDir, normal);
+    float t = rayPlane(vec3(0.0), rayDir, center, normal);
     if (t > 0.0) {
         vec3 hitPos = rayDir * t;
         vec3 sideX = pos3 - pos2;
@@ -134,4 +135,27 @@ void main() {
         }
     }
 
+    // Moon should be solid, rayttrace it as well
+    normal *= -1;
+    center *= -1;
+    t = rayPlane(vec3(0.0), rayDir, center, normal);
+    if (t > 0.0) {
+        vec3 hitPos = rayDir * t;
+        vec3 sideX = -pos3 + pos2;
+        vec3 sideY = -pos1 + pos2;
+        vec2 uv = vec2(
+            dot(hitPos + pos2, sideX) / dot(sideX, sideX),
+            dot(hitPos + pos2, sideY) / dot(sideY, sideY)
+        );
+        uv = (uv - 0.5) / (2.0 / 3.0) + 0.5;
+        // Rotate the uv to match up with the actual moon
+        uv = uv * vec2(-1.0, -1.0) + vec2(1.0, 1.0);
+        if (clamp(uv, 0.0, 1.0) == uv) {
+            // Check if the moon is solid at this point and discard the pixel, if it is
+            vec4 moonColor = texelFetch(Sampler0, ivec2(uv * sunSize) + ivec2(sunSize, 0), 0);
+            if (moonColor.a > 0.1) {
+                discard;
+            }
+        }
+    }
 }
