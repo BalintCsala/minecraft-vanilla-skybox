@@ -1,13 +1,14 @@
-#version 150
+#version 330
+#extension GL_ARB_separate_shader_objects : require
 
-#moj_import <minecraft:dynamictransforms.glsl>
-#moj_import <minecraft:projection.glsl>
+#include <minecraft:dynamictransforms.glsl>
+#include <minecraft:projection.glsl>
 
-in vec3 Position;
+layout(location = 0) in vec3 Position;
 
 void main() {
-    int id = gl_VertexID;
-    switch(id) {
+    int id = gl_VertexIndex;
+    switch (id) {
         case 0:
             gl_Position = vec4(-2.0, 10.0, 0.0, 1.0);
             break;

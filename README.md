@@ -1,13 +1,22 @@
+# Archived
+
+From at least 1.21.9 onward it's no longer possible to make this pack work in the way it was designed, so until this changes, this template will remain archived.
+
+In the meantime I updated the assets to at least not error out in 26.3.
+
+In case you want to take on the challenge, here are the current issues that need to be solved:
+
+1.) The current version was made with the assumption that celestials get their own textures, but now they're in an atlas and on top of that, the textures get padded (the number of padding pixels is based on the aniso setting). I made changes to accomodate most of these, but they might be broken in some cases.
+
+2.) Most of the celestial objects are seemingly in model space now and use a model matrix, meaning it's impossible to determine what the global "up" direction is. This means the only way to get this effect working would be to once again pass everything to post shaders and draw the sky there. This has multiple drawbacks:
+  - Stuff in the sky always renders in the back, so you have to punch holes through everything in the game to make sure the control pixels remain visible. This requires changing basically every shader and thus is very prone to break when the game updates.
+  - Since neither the sky, nor the sun gets a proper world aligned model view matrix, you have to get that from something else and I'm not sure what would make sense here. I'd check if maybe the tars can help, but I wouldn't hold my breath. In general you need some object that is always rendered and you can either make do without it or you can replace it somehow.
+
 # Minecraft vanilla skybox template pack
 
 Only supports 1.21.5 and up (plus 25w10a and up for snapshots)!
 
 An implementation of skyboxes in vanilla minecraft.
-
-If you found this pack helpful, consider donating:
-
-| [![kofi](./images/kofi.png)](https://ko-fi.com/balintcsala) | [![paypal](./images/paypal.png)](https://www.paypal.com/donate/?hosted_button_id=9CJYN7ETGZJPS) |
-| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 
 You're free to use the pack forever in return of a credit and link to this github repository on the distribution site. If these terms don't work for you, contact me on Discord (@balintcsala) or through GitHub.
 
@@ -25,12 +34,19 @@ The current time is based on the angle of the sun around the Z axis and is betwe
 
 For reference the default sun.png includes two skyboxes, a day skybox that starts at 64 (dawn) and reaches full opacity at 80, and a night skybox that starts at 176 and reaches full opacity at 192.
 
-Order the skyboxes such that the start times are in increasing order. `sun.png` should be created based on the following structure:
+Order the skyboxes such that the start times are in increasing order. `sun.png` should be created based on the following steps:
 
-- Put the original sun texture in the top left corner, modified to have an alpha value of 17 everywhere.
-- Right below the sun is the list of skyboxes in chronological order.
-- Before every skybox, place a gap that's 1 pixel tall. The first pixel on the left inside this gap should contain the starting interpolation time of the skybox in the red channel and similarly the second pixel should contain the ending interpolation time.
-- Place the skybox after the gap.
+1. Put the original sun texture in the top left corner.
+1. For every skybox in your list:
+    1. Right below the previous placed image goes a single row of pixels encoding the interpolation times for the next skybox. The red channels of each should contain the starting and ending interpolation times for the next skybox.
+    1. Place the skybox below the previous row
+1. After adding every skybox, crop your image to the minimum size, then add a border of 1 pixels around it, fill it with pixels containing the following RGBA color: (255, 0, 255, 123)
+1. Overwrite the second and third pixels of image (so these should fall within the border of added previously), these should contain the width and height of the sun texture. If `width` and `height` are the width and height respectively:
+    - For the second pixel in the row the red channel should contain `floor(width / 256)` where `floor(x)` means rounding down and the green channel should contain `width - floor(width / 256) * 256`, or in other words, the remainder when dividing by 256.
+    - Same for the third pixel, except use `height` in the calculations.
+    - Example: For the vanilla sun texture (which is 32x32) both pixels would contain the following RGB value: (0, 32, 0)
+
+Check `assets/minecraft/textures/environment/celestial/sun.png` for a reference.
 
 ## Other customizations
 
@@ -56,7 +72,7 @@ The shader removes fog by default, because it might clash with the skybox. To re
 
 ### Return the horizon
 
-The shader removes the horizon of the game (only appears at sunset and gives the lower edge of the sky an orangeish hue). If you want to revert this, delete `assets/minecraft/shaders/core/position_color.vsh` and the same but with `.fsh`.
+The shader removes the horizon of the game (only appears at sunset and gives the lower edge of the sky an orangeish hue). If you want to revert this, delete `assets/minecraft/shaders/core/position_color.vsh`.
 
 ## Limitations
 
@@ -78,12 +94,12 @@ This configuration matches the default one in the pack.
 
 - Original sun.png with a modified alpha value of 17 in the top left 32x32 pixels.
 - First skybox:
-  - Row 33, pixel 0: Red channel is 64
-  - Row 33, pixel 1: Red channel is 80
+  - Row 34, pixel 0: Red channel is 64
+  - Row 34, pixel 1: Red channel is 80
   - Skybox placed between (0, 34) and (768, 546)
 - Second skybox:
-  - Row 547, pixel 0: Red channel is 176
-  - Row 547, pixel 1: Red channel is 192
+  - Row 548, pixel 0: Red channel is 176
+  - Row 548, pixel 1: Red channel is 192
   - Skybox placed between (0, 548) and (768, 1060)
 
 Example timestamps:
